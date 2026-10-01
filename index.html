@@ -5,42 +5,50 @@
   <title>Посміхнись)</title>
   <style>
     body {
-      background-color: #0f172a;
-      color: #f8fafc;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: #0f172a;
+      color: #fff;
+      font-family: system-ui, sans-serif;
       height: 100vh;
       margin: 0;
-    }
-
-    .typewriter {
-      font-size: 3rem;
-      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
-      border-right: .15em solid #f59e0b; /* Курсор */
-      white-space: nowrap;
-      width: 0;
-      animation: 
-        typing 2.5s steps(12, end) forwards,
-        blink-caret .75s step-end infinite;
     }
-
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 12ch; } /* Довжина фрази в символах */
-    }
-
-    @keyframes blink-caret {
-      from, to { border-color: transparent }
-      50% { border-color: #f59e0b; }
+    h1 { font-size: 3rem; margin-bottom: 2rem; }
+    .run-btn {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      background: #ec4899;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      position: absolute;
+      transition: all 0.15s ease-out;
+      box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
     }
   </style>
 </head>
 <body>
 
-  <div class="typewriter">посміхнись)</div>
+  <h1>посміхнись)</h1>
+  <button class="run-btn" id="btn">Натисни тут 😄</button>
 
+  <script>
+    const btn = document.getElementById('btn');
+    
+    function moveButton() {
+      const x = Math.random() * (window.innerWidth - btn.offsetWidth - 40) + 20;
+      const y = Math.random() * (window.innerHeight - btn.offsetHeight - 40) + 20;
+      btn.style.left = `${x}px`;
+      btn.style.top = `${y}px`;
+    }
+
+    btn.addEventListener('mouseover', moveButton);
+    btn.addEventListener('touchstart', moveButton);
+  </script>
 </body>
 </html>
