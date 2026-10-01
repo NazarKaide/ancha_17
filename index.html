@@ -5,62 +5,51 @@
   <title>Посміхнись)</title>
   <style>
     body {
-      background: #18181b;
-      color: #fafafa;
-      font-family: system-ui, sans-serif;
+      background: #09090b;
+      color: #38bdf8;
+      font-family: monospace;
       height: 100vh;
       margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
-      user-select: none;
-      overflow: hidden;
-    }
-    h1 {
-      font-size: 4rem;
-      animation: pulse 1.5s infinite alternate ease-in-out;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.08); text-shadow: 0 0 20px #facc15; }
-    }
-    .emoji-particle {
-      position: absolute;
-      font-size: 2rem;
-      pointer-events: none;
-      animation: explode 0.8s forwards ease-out;
-    }
-    @keyframes explode {
-      0% { opacity: 1; transform: translate(0, 0) scale(0.5); }
-      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1.5) rotate(360deg); }
+      font-size: 2.5rem;
+      padding: 20px;
+      text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <h1>посміхнись)</h1>
+  <div id="text"></div>
 
   <script>
-    const emojis = ['😊', '😄', '✨', '💛', '😎', '🥳', '😉'];
+    const phrases = [
+      "Привіт...",
+      "Я знаю, що ти зараз дивишся в екран 👀",
+      "І обличчя у тебе надто серйозне...",
+      "Так краще не треба!",
+      "Ну-ка...",
+      "посміхнись) 💛"
+    ];
 
-    document.addEventListener('click', (e) => {
-      for (let i = 0; i < 12; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'emoji-particle';
-        particle.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-        particle.style.left = `${e.clientX}px`;
-        particle.style.top = `${e.clientY}px`;
+    const container = document.getElementById('text');
+    let index = 0;
 
-        const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 120 + 50;
-        particle.style.setProperty('--dx', `${Math.cos(angle) * velocity}px`);
-        particle.style.setProperty('--dy', `${Math.sin(angle) * velocity}px`);
-
-        document.body.appendChild(particle);
-        setTimeout(() => particle.remove(), 800);
+    function showNextPhrase() {
+      if (index < phrases.length) {
+        container.style.opacity = 0;
+        setTimeout(() => {
+          container.innerText = phrases[index];
+          container.style.transition = "opacity 0.5s";
+          container.style.opacity = 1;
+          index++;
+          setTimeout(showNextPhrase, 2200);
+        }, 300);
       }
-    });
+    }
+
+    showNextPhrase();
   </script>
 </body>
 </html>
