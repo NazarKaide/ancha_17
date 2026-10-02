@@ -1,55 +1,421 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Посміхнись)</title>
-  <style>
-    body {
-      background: #09090b;
-      color: #38bdf8;
-      font-family: monospace;
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2.5rem;
-      padding: 20px;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Happy Birthday</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg: #07090e;
+            --card-bg: rgba(15, 22, 35, 0.65);
+            --text-main: #f8fafc;
+            --text-muted: #808ea3;
+            --accent-blue: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.25);
+            --border: rgba(255, 255, 255, 0.08);
+            --container-padding: clamp(16px, 4vw, 32px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding: clamp(40px, 8vw, 90px) var(--container-padding);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(29, 78, 216, 0.15), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.08), transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: clamp(40px, 8vw, 80px);
+        }
+
+        .tag {
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            text-transform: uppercase;
+            letter-spacing: 0.35em;
+            color: var(--accent-blue);
+            margin-bottom: clamp(10px, 2vw, 16px);
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.2rem, 7vw, 4.2rem);
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+            margin-bottom: clamp(14px, 3vw, 24px);
+            background: linear-gradient(180deg, #ffffff 0%, #a1b0cb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            font-weight: 300;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 8px;
+        }
+
+        /* Gallery Header */
+        .section-header {
+            margin-bottom: clamp(20px, 4vw, 32px);
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.3rem, 3.5vw, 1.75rem);
+            font-weight: 400;
+            color: #ffffff;
+            letter-spacing: 0.05em;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(10px, 2.5vw, 20px);
+            margin-bottom: clamp(50px, 10vw, 90px);
+        }
+
+        .photo-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: clamp(6px, 1.5vw, 10px);
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        border-color 0.4s ease, 
+                        box-shadow 0.4s ease;
+            backdrop-filter: blur(10px);
+            width: 100%;
+        }
+
+        .photo-card.tall {
+            grid-row: span 2;
+            aspect-ratio: 1/2;
+        }
+
+        .photo-card.square {
+            aspect-ratio: 1/1;
+        }
+
+        .photo-card.portrait {
+            aspect-ratio: 3/4;
+        }
+
+        /* Hover & Touch feedback */
+        @media (hover: hover) {
+            .photo-card:hover {
+                border-color: rgba(59, 130, 246, 0.5);
+                box-shadow: 0 10px 30px -10px var(--accent-glow);
+                transform: translateY(-4px);
+            }
+            .photo-card:hover img {
+                transform: scale(1.05);
+                filter: brightness(1) contrast(1);
+            }
+        }
+
+        .photo-card:active {
+            transform: scale(0.98);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.88) contrast(1.02);
+            transition: transform 0.5s ease, filter 0.5s ease;
+            display: block;
+        }
+
+        /* Wishes Card */
+        .wishes-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: clamp(10px, 2vw, 16px);
+            padding: clamp(28px, 6vw, 56px) clamp(16px, 5vw, 40px);
+            text-align: center;
+            backdrop-filter: blur(12px);
+            position: relative;
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+            width: 100%;
+        }
+
+        .wishes-card h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 400;
+            margin-bottom: clamp(10px, 2vw, 16px);
+            color: #ffffff;
+        }
+
+        .wishes-card p {
+            color: var(--text-muted);
+            font-weight: 300;
+            font-size: clamp(0.9rem, 2vw, 1.05rem);
+            max-width: 520px;
+            margin: 0 auto clamp(24px, 5vw, 36px);
+        }
+
+        .btn-celebrate {
+            background: rgba(59, 130, 246, 0.12);
+            color: #ffffff;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            padding: clamp(12px, 2.5vw, 16px) clamp(24px, 5vw, 36px);
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        @media (hover: hover) {
+            .btn-celebrate:hover {
+                background: var(--accent-blue);
+                border-color: var(--accent-blue);
+                box-shadow: 0 0 25px var(--accent-glow);
+                transform: translateY(-2px);
+            }
+        }
+
+        .btn-celebrate:active {
+            transform: translateY(0) scale(0.97);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 9, 14, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(12px, 3vw, 24px);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-container {
+            position: relative;
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal img {
+            max-width: 100%;
+            max-height: 85vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: var(--text-muted);
+            font-size: 1.8rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+            padding: 8px;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: #ffffff;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 840px) {
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .photo-card.tall {
+                grid-row: span 1;
+                aspect-ratio: 3/4;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .photo-card.tall, .photo-card.square, .photo-card.portrait {
+                grid-row: span 1;
+                aspect-ratio: 3/4;
+            }
+            .modal-close {
+                top: -36px;
+                right: -4px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div id="text"></div>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <span class="tag">Special Day</span>
+            <h1>З Днем Народження</h1>
+            <p>Нехай цей рік принесе спокій, натхнення та безліч незабутніх моментів.</p>
+        </header>
 
-  <script>
-    const phrases = [
-      "Привіт...",
-      "Я знаю, що ти зараз дивишся в екран 👀",
-      "І обличчя у тебе надто серйозне...",
-      "Так краще не треба!",
-      "Ну-ка...",
-      "посміхнись) 💛"
-    ];
+        <!-- Gallery -->
+        <section>
+            <div class="section-header">
+                <div class="section-title">Спогади</div>
+            </div>
 
-    const container = document.getElementById('text');
-    let index = 0;
+            <div class="gallery-grid">
+                <div class="photo-card tall" onclick="openModal(this)">
+                    <img src="css\0.jpg" alt=" ">
+                </div>
+                <div class="photo-card square" onclick="openModal(this)">
+                    <img src="css\1.jpg" alt=" ">
+                </div>
+                <div class="photo-card portrait" onclick="openModal(this)">
+                    <img src="css\2.jpg" alt=" ">
+                </div>
+                <div class="photo-card portrait" onclick="openModal(this)">
+                    <img src="css\3.jpg" alt=" ">
+                </div>
+                <div class="photo-card square" onclick="openModal(this)">
+                    <img src="css\4.jpg" alt=" ">
+                </div>
+                <div class="photo-card portrait" onclick="openModal(this)">
+                    <img src="css\5.jpg" alt=" ">
+                </div>
+                <div class="photo-card tall" onclick="openModal(this)">
+                    <img src="css\6.jpg" alt=" ">
+                </div>
+                <div class="photo-card square" onclick="openModal(this)">
+                    <img src="css\7.jpg" alt=" ">
+                </div>
+                <div class="photo-card portrait" onclick="openModal(this)">
+                    <img src="css\8.jpg" alt=" ">
+                </div>
+                <div class="photo-card portrait" onclick="openModal(this)">
+                    <img src="css\9.jpg" alt=" ">
+                </div>
+                <div class="photo-card square" onclick="openModal(this)">
+                    <img src="css\12.jpg" alt=" ">
+                </div>
+                <div class="photo-card portrait" onclick="openModal(this)">
+                    <img src="css\11.jpg" alt=" ">
+                </div>
+                <div class="photo-card portrait" onclick="openModal(this)">
+                    <img src="css\13.jpg" alt=" ">
+                </div>
+            </div>
+        </section>
 
-    function showNextPhrase() {
-      if (index < phrases.length) {
-        container.style.opacity = 0;
-        setTimeout(() => {
-          container.innerText = phrases[index];
-          container.style.transition = "opacity 0.5s";
-          container.style.opacity = 1;
-          index++;
-          setTimeout(showNextPhrase, 2200);
-        }, 300);
-      }
-    }
+        <!-- Note Section -->
+        <div class="wishes-card">
+            <h2>Для тебе</h2>
+            <p>Дякую за твоє відчуття гумору, підтримку та за всі моменти, які ми ділимо разом. Залишайся такою ж справжньою та особливою.</p>
+            <button class="btn-celebrate" onclick="celebrate()">
+                <span>Святковий салют</span>
+                <span>✨</span>
+            </button>
+        </div>
+    </div>
 
-    showNextPhrase();
-  </script>
+    <!-- Modal -->
+    <div class="modal" id="modal" onclick="closeModal()">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()" aria-label="Закрити">&times;</button>
+            <img id="modal-img" src="" alt="Enlarged moment">
+        </div>
+    </div>
+
+    <script>
+        function celebrate() {
+            confetti({
+                particleCount: 80,
+                spread: 60,
+                origin: { y: 0.8 },
+                colors: ['#3b82f6', '#60a5fa', '#ffffff', '#1d4ed8']
+            });
+        }
+
+        function openModal(card) {
+            const img = card.querySelector('img');
+            if (img) {
+                document.getElementById('modal-img').src = img.src;
+                const modal = document.getElementById('modal');
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
 </body>
 </html>
