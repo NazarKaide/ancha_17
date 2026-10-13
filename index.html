@@ -6,17 +6,17 @@
     <title>Happy Birthday</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --bg: #07090e;
-            --card-bg: rgba(15, 22, 35, 0.65);
+            --card-bg: rgba(18, 26, 43, 0.65);
             --text-main: #f8fafc;
-            --text-muted: #808ea3;
-            --accent-blue: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.25);
-            --border: rgba(255, 255, 255, 0.08);
+            --text-muted: #94a3b8;
+            --accent-blue: #60a5fa;
+            --accent-glow: rgba(96, 165, 250, 0.3);
+            --border: rgba(255, 255, 255, 0.12);
             --container-padding: clamp(16px, 4vw, 32px);
         }
 
@@ -41,8 +41,9 @@
             padding: clamp(40px, 8vw, 90px) var(--container-padding);
             min-height: 100vh;
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(29, 78, 216, 0.15), transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.08), transparent 50%);
+                radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.18), transparent 45%),
+                radial-gradient(circle at 20% 40%, rgba(147, 197, 253, 0.08), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(37, 99, 235, 0.12), transparent 50%);
             background-attachment: fixed;
         }
 
@@ -56,73 +57,101 @@
         header {
             text-align: center;
             margin-bottom: clamp(40px, 8vw, 80px);
+            position: relative;
         }
 
         .tag {
-            font-size: clamp(0.7rem, 2vw, 0.8rem);
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
             text-transform: uppercase;
             letter-spacing: 0.35em;
             color: var(--accent-blue);
             margin-bottom: clamp(10px, 2vw, 16px);
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             font-weight: 500;
+            background: rgba(59, 130, 246, 0.1);
+            padding: 4px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
         }
 
         h1 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: clamp(2.2rem, 7vw, 4.2rem);
+            font-size: clamp(2.4rem, 7.5vw, 4.5rem);
             font-weight: 600;
-            line-height: 1.15;
-            letter-spacing: -0.02em;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
             margin-bottom: clamp(14px, 3vw, 24px);
-            background: linear-gradient(180deg, #ffffff 0%, #a1b0cb 100%);
+            background: linear-gradient(180deg, #ffffff 30%, #b8cbe8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        .heart-icon {
+            display: inline-block;
+            color: #60a5fa;
+            -webkit-text-fill-color: initial;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+        }
+
         header p {
             color: var(--text-muted);
-            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            font-size: clamp(1rem, 2.5vw, 1.15rem);
             font-weight: 300;
-            max-width: 500px;
+            max-width: 520px;
             margin: 0 auto;
             padding: 0 8px;
         }
 
         /* Gallery Header */
         .section-header {
-            margin-bottom: clamp(20px, 4vw, 32px);
+            margin-bottom: clamp(24px, 4vw, 36px);
             text-align: center;
         }
 
         .section-title {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: clamp(1.3rem, 3.5vw, 1.75rem);
+            font-size: clamp(1.4rem, 3.5vw, 1.85rem);
             font-weight: 400;
             color: #ffffff;
             letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before, .section-title::after {
+            content: "✦";
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            opacity: 0.7;
         }
 
         /* Gallery Grid */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: clamp(10px, 2.5vw, 20px);
+            gap: clamp(12px, 2.5vw, 22px);
             margin-bottom: clamp(50px, 10vw, 90px);
         }
 
         .photo-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: clamp(6px, 1.5vw, 10px);
+            border-radius: clamp(12px, 2vw, 18px);
             overflow: hidden;
             cursor: pointer;
             position: relative;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-                        border-color 0.4s ease, 
-                        box-shadow 0.4s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             backdrop-filter: blur(10px);
             width: 100%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
         }
 
         .photo-card.tall {
@@ -138,85 +167,87 @@
             aspect-ratio: 3/4;
         }
 
-        /* Hover & Touch feedback */
+        /* Cute Hover & Touch feedback */
         @media (hover: hover) {
             .photo-card:hover {
-                border-color: rgba(59, 130, 246, 0.5);
-                box-shadow: 0 10px 30px -10px var(--accent-glow);
-                transform: translateY(-4px);
+                border-color: rgba(147, 197, 253, 0.6);
+                box-shadow: 0 12px 35px -5px var(--accent-glow);
+                transform: translateY(-6px) scale(1.01);
             }
             .photo-card:hover img {
-                transform: scale(1.05);
-                filter: brightness(1) contrast(1);
+                transform: scale(1.06);
+                filter: brightness(1) contrast(1.02);
             }
         }
 
         .photo-card:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
         }
 
         .photo-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.88) contrast(1.02);
-            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: brightness(0.92) contrast(1.01);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
             display: block;
         }
 
         /* Wishes Card */
         .wishes-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: clamp(10px, 2vw, 16px);
-            padding: clamp(28px, 6vw, 56px) clamp(16px, 5vw, 40px);
+            background: linear-gradient(145deg, rgba(20, 30, 50, 0.7), rgba(12, 18, 30, 0.8));
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: clamp(16px, 3vw, 24px);
+            padding: clamp(32px, 6vw, 60px) clamp(20px, 5vw, 44px);
             text-align: center;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
             position: relative;
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+            box-shadow: 0 20px 50px -10px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
             width: 100%;
         }
 
         .wishes-card h2 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-size: clamp(1.6rem, 4vw, 2.4rem);
             font-weight: 400;
-            margin-bottom: clamp(10px, 2vw, 16px);
+            margin-bottom: clamp(12px, 2vw, 18px);
             color: #ffffff;
         }
 
         .wishes-card p {
             color: var(--text-muted);
             font-weight: 300;
-            font-size: clamp(0.9rem, 2vw, 1.05rem);
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
             max-width: 520px;
-            margin: 0 auto clamp(24px, 5vw, 36px);
+            margin: 0 auto clamp(28px, 5vw, 40px);
+            line-height: 1.7;
         }
 
         .btn-celebrate {
-            background: rgba(59, 130, 246, 0.12);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(37, 99, 235, 0.15));
             color: #ffffff;
-            border: 1px solid rgba(59, 130, 246, 0.35);
-            padding: clamp(12px, 2.5vw, 16px) clamp(24px, 5vw, 36px);
-            font-size: clamp(0.75rem, 2vw, 0.85rem);
-            letter-spacing: 0.1em;
+            border: 1px solid rgba(147, 197, 253, 0.4);
+            padding: clamp(14px, 2.5vw, 18px) clamp(28px, 5vw, 40px);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             cursor: pointer;
-            border-radius: 40px;
-            transition: all 0.3s ease;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             font-weight: 500;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
         }
 
         @media (hover: hover) {
             .btn-celebrate:hover {
-                background: var(--accent-blue);
-                border-color: var(--accent-blue);
-                box-shadow: 0 0 25px var(--accent-glow);
-                transform: translateY(-2px);
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+                border-color: #60a5fa;
+                box-shadow: 0 8px 30px var(--accent-glow);
+                transform: translateY(-3px) scale(1.03);
             }
         }
 
@@ -229,12 +260,12 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(7, 9, 14, 0.95);
+            background: rgba(5, 7, 12, 0.92);
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: clamp(12px, 3vw, 24px);
-            backdrop-filter: blur(12px);
+            padding: clamp(16px, 3vw, 28px);
+            backdrop-filter: blur(16px);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
@@ -259,27 +290,33 @@
             width: auto;
             height: auto;
             object-fit: contain;
-            border-radius: 6px;
+            border-radius: 16px;
             border: 1px solid var(--border);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(59, 130, 246, 0.2);
         }
 
         .modal-close {
             position: absolute;
-            top: -40px;
+            top: -44px;
             right: 0;
             color: var(--text-muted);
-            font-size: 1.8rem;
+            font-size: 2rem;
             cursor: pointer;
-            background: none;
-            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             line-height: 1;
-            padding: 8px;
-            transition: color 0.2s;
+            transition: all 0.2s;
         }
 
         .modal-close:hover {
             color: #ffffff;
+            background: rgba(255, 255, 255, 0.15);
         }
 
         /* Responsive Breakpoints */
@@ -296,15 +333,15 @@
         @media (max-width: 520px) {
             .gallery-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
+                gap: 12px;
             }
             .photo-card.tall, .photo-card.square, .photo-card.portrait {
                 grid-row: span 1;
                 aspect-ratio: 3/4;
             }
             .modal-close {
-                top: -36px;
-                right: -4px;
+                top: -48px;
+                right: 0;
             }
         }
     </style>
@@ -314,66 +351,66 @@
     <div class="container">
         <!-- Header -->
         <header>
-            <span class="tag">Special Day</span>
-            <h1>З Днем Народження</h1>
-            <p>Нехай цей рік принесе спокій, натхнення та безліч незабутніх моментів.</p>
+            <span class="tag">✦ Special Day ✦</span>
+            <h1>З Днем Народження <span class="heart-icon">🤍</span></h1>
+            <p>Нехай цей рік принесе спокій, натхнення та безліч незабутніх, теплих моментів.</p>
         </header>
 
         <!-- Gallery -->
         <section>
             <div class="section-header">
-                <div class="section-title">Спогади</div>
+                <div class="section-title">Наші спогади</div>
             </div>
 
             <div class="gallery-grid">
                 <div class="photo-card tall" onclick="openModal(this)">
-                    <img src="css\0.jpg" alt=" ">
+                    <img src="css/0.jpg" alt="Момент">
                 </div>
                 <div class="photo-card square" onclick="openModal(this)">
-                    <img src="css\1.jpg" alt=" ">
+                    <img src="css/1.jpg" alt="Момент">
                 </div>
                 <div class="photo-card portrait" onclick="openModal(this)">
-                    <img src="css\2.jpg" alt=" ">
+                    <img src="css/2.jpg" alt="Момент">
                 </div>
                 <div class="photo-card portrait" onclick="openModal(this)">
-                    <img src="css\3.jpg" alt=" ">
+                    <img src="css/3.jpg" alt="Момент">
                 </div>
                 <div class="photo-card square" onclick="openModal(this)">
-                    <img src="css\4.jpg" alt=" ">
+                    <img src="css/4.jpg" alt="Момент">
                 </div>
                 <div class="photo-card portrait" onclick="openModal(this)">
-                    <img src="css\5.jpg" alt=" ">
+                    <img src="css/5.jpg" alt="Момент">
                 </div>
                 <div class="photo-card tall" onclick="openModal(this)">
-                    <img src="css\6.jpg" alt=" ">
+                    <img src="css/6.jpg" alt="Момент">
                 </div>
                 <div class="photo-card square" onclick="openModal(this)">
-                    <img src="css\7.jpg" alt=" ">
+                    <img src="css/7.jpg" alt="Момент">
                 </div>
                 <div class="photo-card portrait" onclick="openModal(this)">
-                    <img src="css\8.jpg" alt=" ">
+                    <img src="css/8.jpg" alt="Момент">
                 </div>
                 <div class="photo-card portrait" onclick="openModal(this)">
-                    <img src="css\9.jpg" alt=" ">
+                    <img src="css/9.jpg" alt="Момент">
                 </div>
                 <div class="photo-card square" onclick="openModal(this)">
-                    <img src="css\12.jpg" alt=" ">
+                    <img src="css/12.jpg" alt="Момент">
                 </div>
                 <div class="photo-card portrait" onclick="openModal(this)">
-                    <img src="css\11.jpg" alt=" ">
+                    <img src="css/11.jpg" alt="Момент">
                 </div>
                 <div class="photo-card portrait" onclick="openModal(this)">
-                    <img src="css\13.jpg" alt=" ">
+                    <img src="css/13.jpg" alt="Момент">
                 </div>
             </div>
         </section>
 
         <!-- Note Section -->
         <div class="wishes-card">
-            <h2>Для тебе</h2>
+            <h2>Для тебе ✨</h2>
             <p>Дякую за твоє відчуття гумору, підтримку та за всі моменти, які ми ділимо разом. Залишайся такою ж справжньою та особливою.</p>
             <button class="btn-celebrate" onclick="celebrate()">
-                <span>Святковий салют</span>
+                <span>Запустити магію</span>
                 <span>✨</span>
             </button>
         </div>
@@ -389,11 +426,45 @@
 
     <script>
         function celebrate() {
-            confetti({
-                particleCount: 80,
+            // Запуск сердечок та зірочок
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 }
+            };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+                colors: ['#60a5fa', '#93c5fd', '#ffffff']
+            });
+
+            fire(0.2, {
                 spread: 60,
-                origin: { y: 0.8 },
-                colors: ['#3b82f6', '#60a5fa', '#ffffff', '#1d4ed8']
+                colors: ['#3b82f6', '#bfdbfe']
+            });
+
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                colors: ['#ffffff', '#60a5fa']
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
             });
         }
 
