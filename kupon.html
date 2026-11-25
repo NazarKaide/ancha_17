@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Маленькі купончики</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      min-height: 100dvh;
+      background: #000000;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow-x: hidden;
+      overscroll-behavior-y: none;
+    }
+
+    #starfield {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      min-height: 100%;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding:
+        max(20px, env(safe-area-inset-top))
+        max(16px, env(safe-area-inset-right))
+        max(24px, env(safe-area-inset-bottom))
+        max(16px, env(safe-area-inset-left));
+      gap: clamp(16px, 2.8vh, 26px);
+    }
+
+    .header {
+      text-align: center;
+      max-width: 540px;
+    }
+
+    .header h1 {
+      font-size: clamp(1.35rem, 4.4vw, 2.05rem);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+    }
+
+    .header p {
+      margin-top: 6px;
+      font-size: clamp(0.85rem, 2.5vw, 0.98rem);
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    /* Сітка купонів */
+    .coupons-grid {
+      width: min(860px, 94vw);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: clamp(12px, 2vw, 18px);
+    }
+
+    .coupon {
+      position: relative;
+      min-height: 168px;
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      background: rgba(12, 14, 24, 0.82);
+      border: 1px dashed rgba(255, 214, 232, 0.35);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.85);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+      transition: transform 0.22s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      text-align: left;
+    }
+
+    @media (hover: hover) {
+      .coupon:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 214, 232, 0.65);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 185, 218, 0.12);
+      }
+    }
+
+    .coupon:active {
+      transform: scale(0.98);
+    }
+
+    .coupon.opened {
+      border-style: solid;
+      border-color: rgba(255, 198, 224, 0.45);
+      background: rgba(22, 16, 28, 0.86);
+    }
+
+    .coupon-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .coupon-tag {
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255, 214, 232, 0.82);
+    }
+
+    .coupon-status {
+      font-size: 0.74rem;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .coupon.opened .coupon-status {
+      background: rgba(255, 182, 213, 0.18);
+      color: #ffdbe9;
+    }
+
+    .coupon-title {
+      font-size: clamp(1.05rem, 3vw, 1.2rem);
+      font-weight: 500;
+      line-height: 1.3;
+      color: #ffffff;
+    }
+
+    .coupon-desc {
+      font-size: clamp(0.86rem, 2.5vw, 0.95rem);
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .coupon-secret {
+      display: none;
+      padding-top: 8px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.16);
+      font-size: 0.84rem;
+      color: #ffd4e6;
+      line-height: 1.4;
+    }
+
+    .coupon.opened .coupon-secret {
+      display: block;
+      animation: fadeIn 0.35s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 4px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      font-size: 0.86rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    @media (hover: hover) {
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+
+  <main class="page">
+    <header class="header">
+      <h1>Маленькі купончики для тебе</h1>
+      <p>Натисни на будь-яку картку, щоб відкрити її — коли захочеш використати</p>
+    </header>
+
+    <section class="coupons-grid" id="couponsGrid" aria-label="Віртуальні купони"></section>
+
+    <div class="footer-actions">
+      <button class="btn" id="resetBtn">Скинути відмітки</button>
+      <a href="index1.html" class="btn">← Назад до фото</a>
+    </div>
+  </main>
+
+  <script>
+    // Заміни або додай свої купони сюди
+    const COUPONS = [
+      {
+        id: "movie",
+        tag: "Купон #1",
+        title: "Спільний вечір кіно",
+        preview: "Натисни, щоб розкрити купон",
+        detail: "Обираєш будь-який фільм чи серіал, беремо смаколики і дивимось разом без поспіху.",
+        note: "Діє у будь-який вільний вечір"
+      },
+      {
+        id: "coffee",
+        tag: "Купон #2",
+        title: "Смачна кава або щось солодке",
+        preview: "Натисни, щоб розкрити купон",
+        detail: "Пригощаю улюбленою кавою, какао чи десертом за твоїм вибором.",
+        note: "Можна використати на прогулянці або по дорозі"
+      },
+      {
+        id: "walk",
+        tag: "Купон #3",
+        title: "Вечірня прогулянка під зорями",
+        preview: "Натисни, щоб розкрити купон",
+        detail: "Просто виходимо погуляти без планів і зайвого шуму, поговорити або помовчати поруч.",
+        note: "Особливо добре працює на свіжому повітрі"
+      },
+      {
+        id: "hug",
+        tag: "Купон #4",
+        title: "Довгі теплі обійми",
+        preview: "Натисни, щоб розкрити купон",
+        detail: "Без ліміту часу — просто щоб видихнути, заспокоїтись і відчути, що поруч є свій людина.",
+        note: "Без обмежень у кількості"
+      }
+    ];
+
+    const STORAGE_KEY = "opened_coupons_v1";
+    const gridEl = document.getElementById("couponsGrid");
+    const resetBtn = document.getElementById("resetBtn");
+
+    let openedSet = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+
+    function saveOpened() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(openedSet)));
+    }
+
+    function renderCoupons() {
+      gridEl.innerHTML = "";
+      COUPONS.forEach((c) => {
+        const isOpened = openedSet.has(c.id);
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = `coupon${isOpened ? " opened" : ""}`;
+        card.setAttribute("aria-expanded", String(isOpened));
+
+        card.innerHTML = `
+          <div>
+            <div class="coupon-top">
+              <span class="coupon-tag">${c.tag}</span>
+              <span class="coupon-status">${isOpened ? "Відкрито" : "Закрито"}</span>
+            </div>
+            <div class="coupon-title" style="margin-top: 10px;">${c.title}</div>
+            <div class="coupon-desc" style="margin-top: 6px;">${isOpened ? c.detail : c.preview}</div>
+          </div>
+          <div class="coupon-secret">${c.note}</div>
+        `;
+
+        card.addEventListener("click", (e) => {
+          if (!openedSet.has(c.id)) {
+            openedSet.add(c.id);
+            saveOpened();
+            renderCoupons();
+          }
+          const rect = card.getBoundingClientRect();
+          triggerBurst(e.clientX || rect.left + rect.width / 2, e.clientY || rect.top + rect.height / 2);
+        });
+
+        gridEl.appendChild(card);
+      });
+    }
+
+    resetBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openedSet.clear();
+      saveOpened();
+      renderCoupons();
+    });
+
+    renderCoupons();
+
+    // --- Зоряне небо та легкі іскри ---
+    const canvas = document.getElementById("starfield");
+    const ctx = canvas.getContext("2d");
+
+    let viewW = window.innerWidth;
+    let viewH = window.innerHeight;
+    let stars = [];
+    let softParticles = [];
+    let bursts = [];
+    let lastTrailTime = 0;
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      viewW = window.innerWidth;
+      viewH = window.innerHeight;
+      canvas.width = Math.floor(viewW * dpr);
+      canvas.height = Math.floor(viewH * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const starCount = Math.max(80, Math.min(200, Math.floor((viewW * viewH) / 6500)));
+      stars = Array.from({ length: starCount }, () => ({
+        x: Math.random() * viewW,
+        y: Math.random() * viewH,
+        r: Math.random() * 1.45 + 0.35,
+        alpha: Math.random(),
+        delta: (Math.random() * 0.012 + 0.003) * (Math.random() < 0.5 ? 1 : -1)
+      }));
+
+      const dustCount = viewW < 600 ? 16 : 24;
+      softParticles = Array.from({ length: dustCount }, () => ({
+        x: Math.random() * viewW,
+        y: Math.random() * viewH,
+        r: Math.random() * 1.9 + 0.8,
+        vx: (Math.random() - 0.5) * 0.22,
+        vy: -(Math.random() * 0.22 + 0.08),
+        alpha: Math.random() * 0.4 + 0.15
+      }));
+    }
+
+    function addSpark(x, y, speedScale = 1, lifeDecay = 0.025) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = (Math.random() * 1.5 + 0.35) * speedScale;
+      bursts.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        r: Math.random() * 1.7 + 0.6,
+        life: 1,
+        decay: lifeDecay
+      });
+    }
+
+    function triggerTrail(x, y) {
+      const now = performance.now();
+      if (now - lastTrailTime > 32) {
+        addSpark(x, y, 0.42, 0.038);
+        lastTrailTime = now;
+      }
+    }
+
+    function triggerBurst(x, y) {
+      const count = viewW < 600 ? 12 : 16;
+      for (let i = 0; i < count; i++) {
+        addSpark(x, y, 1.25, 0.024);
+      }
+    }
+
+    window.addEventListener("mousemove", (e) => triggerTrail(e.clientX, e.clientY), { passive: true });
+    window.addEventListener("touchmove", (e) => {
+      const t = e.touches[0];
+      if (t) triggerTrail(t.clientX, t.clientY);
+    }, { passive: true });
+
+    window.addEventListener("click", (e) => {
+      if (!e.target.closest("button") && !e.target.closest("a")) {
+        triggerBurst(e.clientX, e.clientY);
+      }
+    });
+
+    function render() {
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, viewW, viewH);
+
+      for (const s of stars) {
+        s.alpha += s.delta;
+        if (s.alpha <= 0.15 || s.alpha >= 1) s.delta *= -1;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha.toFixed(3)})`;
+        ctx.fill();
+      }
+
+      for (const p of softParticles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.y < -10) {
+          p.y = viewH + 10;
+          p.x = Math.random() * viewW;
+        }
+        if (p.x < -10) p.x = viewW + 10;
+        if (p.x > viewW + 10) p.x = -10;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 225, 238, ${p.alpha})`;
+        ctx.fill();
+      }
+
+      for (let i = bursts.length - 1; i >= 0; i--) {
+        const b = bursts[i];
+        b.x += b.vx;
+        b.y += b.vy;
+        b.vx *= 0.96;
+        b.vy *= 0.96;
+        b.life -= b.decay;
+        if (b.life <= 0) {
+          bursts.splice(i, 1);
+          continue;
+        }
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 232, 242, ${b.life.toFixed(3)})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("orientationchange", () => setTimeout(resizeCanvas, 120));
+    resizeCanvas();
+    render();
+  </script>
+</body>
+</html>
